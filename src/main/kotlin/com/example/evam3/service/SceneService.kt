@@ -1,64 +1,65 @@
 package com.example.evam3.service
 
-import com.example.evam3.entity.Film
-import com.example.evam3.repository.FilmRepository
+import com.example.evam3.entity.Scene
+import com.example.evam3.repository.SceneRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
 @Service
-class FilmService {
-    @Autowired
-    lateinit var filmRepository: FilmRepository
+class SceneService {
 
-    fun list ():List<Film>{
-        return filmRepository.findAll()
+    @Autowired
+    lateinit var sceneRepository: SceneRepository
+
+    fun list ():List<Scene>{
+        return sceneRepository.findAll()
     }
 
-    fun save (film:Film): Film{
+    fun save (scene: Scene): Scene {
         try{
-            film.title?.takeIf { it.trim().isNotEmpty() }
+            scene.description?.takeIf { it.trim().isNotEmpty() }
                 ?: throw Exception("Film no debe ser vacio")
-            return filmRepository.save(film)
+            return sceneRepository.save(scene)
         }
         catch (ex: Exception){
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,ex.message)
         }
     }
-    fun update(film: Film): Film {
+    fun update(scene: Scene): Scene{
         try {
-            filmRepository.findById(film.id)
+            sceneRepository.findById(scene.id)
                 ?: throw Exception("ID no existe")
 
-            return filmRepository.save(film)
+            return sceneRepository.save(scene)
         }
         catch (ex:Exception){
             throw ResponseStatusException(HttpStatus.NOT_FOUND,ex.message)
         }
     }
 
-    fun updateName(film: Film): Film {
+    fun updateName(scene: Scene): Scene{
         try{
-            val response = filmRepository.findById(film.id)
+            val response = sceneRepository.findById(scene.id)
                 ?: throw Exception("ID no existe")
             response.apply {
-                title=film.title //un atributo del modelo
+                description=scene.description //un atributo del modelo
             }
-            return filmRepository.save(response)
+            return sceneRepository.save(response)
         }
         catch (ex:Exception){
             throw ResponseStatusException(HttpStatus.NOT_FOUND,ex.message)
         }
     }
-    fun listById (id:Long?): Film?{
-        return filmRepository.findById(id)
+    fun listById (id:Long?):Scene?{
+        return sceneRepository.findById(id)
     }
     fun delete (id: Long?):Boolean?{
         try{
-            val response = filmRepository.findById(id)
+            val response = sceneRepository.findById(id)
                 ?: throw Exception("ID no existe")
-            filmRepository.deleteById(id!!)
+            sceneRepository.deleteById(id!!)
             return true
         }
         catch (ex:Exception){
